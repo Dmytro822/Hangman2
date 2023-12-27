@@ -1,0 +1,94 @@
+﻿<Page x:Class="Hangman2.Views.Pages.GamePage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Hangman2.Views.Pages;assembly=Hangman2"
+        xmlns:vm="clr-namespace:Hangman2.ViewModels;assembly=Hangman2"
+        xmlns:c="clr-namespace.Hangman2.Converters;assembly=Hangman2"
+        xmlns:ce="clr-namespace.Hangman2.Commands;assembly=Hangman2"  
+        mc:Ignorable="d"
+        Title="GamePage" Height="450" Width="800">
+    
+    <Page.Resources>
+        <vm:GameViewModel x:Key="gvm"/>
+        <c:TestConverter x:Key="TestConverter"/>
+        <ce:AlphabetClickCommand x:Key="AlphabetClickCommand"/>
+        <DataTemplate x:Key="WordTemplate">
+            <Button Width="40"
+                    Height="40"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="1"
+                    Content="{Binding Text}">
+                <Button.Background>
+                    <SolidColorBrush Color="LightGray"></SolidColorBrush>
+                </Button.Background>
+            </Button>
+        </DataTemplate>
+        <DataTemplate x:Key="Alphabet_level2">
+            <Button Command="{StaticResource AlphabetClickCommand}"
+                    Width="40"
+                    Height="40"
+                    Background="{Binding Color}"
+                    Margin="2"
+                    Content="{Binding Text}">
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource TestConverter}">
+                        <Binding/>
+                        <Binding Source="{StaticResource gvm}"/>
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
+        </DataTemplate>
+        <DataTemplate x:Key="Alphabet_level1">
+            <ItemsControl ItemsSource="{Binding}"
+                          ItemTemplate="{DynamicResource Alphabet_Level2}"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </DataTemplate>
+        
+    </Page.Resources>
+    <Grid DataContext="{StaticResource gvm}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ItemsControl Grid.Column="0"
+                          ItemsSource="{Binding Word}"
+                          ItemTemplate="{DynamicResource WordTemplate}"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+            <Image Source="{Binding ImagePath}"
+                   Grid.Column="1"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding Alphabet}"
+                          ItemTemplate="{DynamicResource Alphabet_Level1}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+            
+        </Grid>
+    </Grid>
+</Page>      
